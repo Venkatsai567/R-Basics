@@ -1,0 +1,152 @@
+---
+title: "CIA 1-1"
+author: "venkata sai krishna 2028232"
+date: "20/02/2021"
+output: html_document
+---
+
+#Problem statement- A company wants to conduct a survey to know the preferences at the work place including in various industries like E-commerce, IT, professional services and others,company wants to know on what bases the other employees are listening to the music and not listening to the music,if they are listening to the music, on performing which work and how many hours they are listening. And whether age,gender affect the listening,like the music is motivating them to listen or enhancing the mind to work during the workplace or not.And which gender is more towards the passion of listening to the music.Total of 26 samples has been collected by the employee to know about the preferences of the employees.
+##Form Responses 1
+```{R}
+library(readxl)
+data1=read_excel("C:\\Users\\VENKATA SAI\\Desktop\\cia 1\\coded_Music listening preferences at work place.xlsx", sheet="Form Responses 1")
+
+data1$Industry = factor(data1$Industry, levels = c(1,2,3,4), labels = c("E commerce ", "Professional Service ","IT","Other"))
+
+data1$Age = factor(data1$Age, levels = c(1,2,3,4,5), labels = c("18-25","26-35","36-45","46-55","56-65"))
+
+data1$Gender = factor(data1$Gender, levels = c(1,2), labels = c("Males","Female"))
+
+data1$`Listening hours`= factor(data1$`Listening hours`, levels = c(1,2,3,4,5), labels = c("Less than 1 hr","1-2 hrs","2-3 hrs","3-4 hrs","More than 4"))
+
+str(data1$Industry)
+View(data1$Industry)
+
+str(data1$Age)
+View(data1$Age)
+
+str(data1$Gender)
+View(data1$Gender)
+
+str(data1$`Listening hours`)
+View(data1$`Listening hours`)
+
+View(data1)
+
+
+```
+
+```{r}
+data2=read_xlsx("C:\\Users\\VENKATA SAI\\Desktop\\cia 1\\coded_Music listening preferences at work place.xlsx", sheet="Form Responses 1 (2)")
+
+
+View(data2)
+summary(data2)
+str(data2)
+fix(data2)
+
+```
+
+```{r}
+#subsetting the data1
+
+Genre=subset(data1,select = c(5:27))
+str(Genre)
+activities=subset(data1,select=c(28:36))
+str(activities)
+functions=subset(data1,select = c(37:49))
+str(functions)
+
+#subsetting the data2
+
+Genre=subset(data2,select = c(5:27))
+str(Genre)
+activities=subset(data2,select=c(28:36))
+str(activities)
+functions=subset(data2,select = c(37:49))
+str(functions)
+```
+
+
+#filtering the data1
+```{r}
+Details = data1[,1:4]
+Genre =data1[,5:27]
+Activity =data1[,28:36]
+Function = data1[,37:49]
+
+Genre  =cbind(Details,Genre)
+activities = cbind(Details,Activity)
+Functions = cbind(Details,Function)
+
+Genre
+activities
+Functions
+
+```
+
+
+#corelation
+```{r}
+library(corrplot)
+
+cor(data1[,5:27]) #co-relation of genre
+crltn_genre= cor(data1[,5:27])
+corrplot(crltn_genre, type="lower")
+
+
+```
+###The above corrplot shows the co-relation between the genres, the genres which are  blue represents corelation>0 which means if one variable increases the other variable will also increase. For some variables the co relation=0, which means there is no corelation, represented in white color, and the negative corelation represents, when one variable increases the other variable decreases.For example- the co relation for jass and jass is 1 i.e, which means these are highly co-related. co-relation for bhajan and soft is less co-related. And for blues and folk there is no corelation so the value is 0.
+
+
+```{r}
+cor(data1[,28:36])#co-relation of activities
+crltn_activ = cor(data1[,28:36])
+corrplot(crltn_activ,"square",type=("lower"))
+```
+###The above corrplot shows the co-relation between the activities, the activities which are  blue represents corelation>0 which means if one variable increases the other variable will also increase. For some variables the co relation=0, which means there is no corelation, represented in white color, and the negative corelation represents, when one variable increases the other variable decreases.For example- the co relation for talking to others and talking to others is 1 i.e, which means these are highly co-related. co-relation for taking a break/relaxing and doing numerical task is less co-related. And for talking to others doing numerical task there is no corelation so the value is 0.
+
+```{r}
+
+cor(data1[,37:49])#co-relation of functions
+crltn_func = cor(data1[,37:49])
+corrplot(crltn_func,type="lower")
+
+```
+###The above corrplot shows the co-relation between the functions, the functions which are dark blue represents corelation>0 which means if one variable increases the other variable will also increase. For some variables the co relation=0, which means there is no corelation, represented in white color, and the negative corelation represents, when one variable increases the other variable decreases.For example- the co relation for makes you less tired and makes you less tired is 1 i.e, which means these are highly co-relate.
+
+
+#heatmap
+```{R}
+
+corr_genre=signif(cor(crltn_genre),2)
+corr_genre
+col=colorRampPalette(c("light yellow","orange","blue"))(20)
+heatmap(crltn_genre,cexRow = 0.6, cexCol = 0.6,col=col,symm=T)
+```
+###The above heatmap shows the correlation between the genres, blue color show that they are highly co-related, orange shows moderately correlated and yellow shows no and less correlated. 
+
+```{r}
+
+###activities
+
+corr_activ=signif(cor(crltn_activ ),2)
+corr_activ
+col=colorRampPalette(c("red","white","blue"))(20)
+heatmap(crltn_activ,cexRow = 0.9, cexCol = 0.5,col=col,symm=T)
+```
+###The aboove heat map shows the correlation between the activities, blue color represents they are highlt correlated and white is moderately correlated and red shows less correlated. 
+
+```{r}
+
+###functions
+?signif
+corr_func=signif(cor(crltn_func),2)
+corr_func
+col=colorRampPalette(c("yellow","white","blue"))(212)
+heatmap(crltn_func,cexRow = 0.7, cexCol = 0.5,col=col,symm=T)
+```
+###The aboove heat map shows the correlation between the activities, blue color represents they are highlt correlated and white is moderately correlated and yellow shows less correlated.
+
+
+
